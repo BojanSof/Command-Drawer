@@ -11,8 +11,9 @@ class Drawer
         ~Drawer();
 
         const sf::CircleShape& getBody() const;
-        
+        const sf::VertexArray& getShapes() const;
         void Move(float x, float y);
+        void Reset();
         sf::VertexArray& DrawLine(float x, float y);
         
     private:

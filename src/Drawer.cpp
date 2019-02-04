@@ -17,11 +17,24 @@ const sf::CircleShape& Drawer::getBody() const
     return m_body;
 }
 
+const sf::VertexArray& Drawer::getShapes() const
+{
+    return m_shape;
+}
+
 void Drawer::Move(float x, float y)
 {
     m_x = x;
     m_y = y;
     m_body.setPosition(x, y);
+}
+
+void Drawer::Reset()
+{
+    m_x = 0;
+    m_y = 0;
+    m_body.setPosition(m_x, m_y);
+    m_shape.clear();
 }
 
 sf::VertexArray& Drawer::DrawLine(float x, float y)
