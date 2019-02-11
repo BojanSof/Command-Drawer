@@ -10,7 +10,6 @@ state CommandsEngine::processCommand(std::string command)
     while(std::getline(m_parser, token, ' '))
     {
         tokens.push_back(token);
-        std::cout << "Token: " << token << std::endl;
     }
     std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
     if(tokens[0] == "move")

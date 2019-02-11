@@ -4,6 +4,7 @@
 #include <Common.h>
 #include <CommandsEngine.h>
 #include <Drawer.h>
+#include <Textbox.h>
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
@@ -29,6 +30,7 @@ class Application
         Drawer m_drawer;
         sf::RenderWindow m_window;
         std::string m_title;
+        TextBox m_textbox;
         bool m_running;
         uint m_width;
         uint m_height;
