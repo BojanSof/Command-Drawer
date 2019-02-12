@@ -1,21 +1,20 @@
 #include <CommandsEngine.h>
 
-state CommandsEngine::processCommand(std::string command)
+state CommandsEngine::processCommand(const std::string& command)
 {
     state newState;
-    Reset();
+    reset();
     m_parser.str(command);
-    std::vector<std::string> tokens;
     std::string token;
     while(std::getline(m_parser, token, ' '))
     {
-        tokens.push_back(token);
+        m_tokens.push_back(token);
     }
-    std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
-    if(tokens[0] == "move")
+    std::transform(m_tokens[0].begin(), m_tokens[0].end(), m_tokens[0].begin(), ::tolower);
+    if(m_tokens[0] == "move")
     {
         newState = state::MOVE;
-        if(tokens.size() != 3) 
+        if(m_tokens.size() != 3) 
         {
             newState = state::UNKNOWN;
             errorMessage = "Usage: move <x-coordinate> <y-coordinate>";
@@ -24,8 +23,8 @@ state CommandsEngine::processCommand(std::string command)
         {
             try
             {
-                uint param1 = std::stoul(tokens[1]);
-                uint param2 = std::stoul(tokens[2]);
+                uint param1 = std::stoul(m_tokens[1]);
+                uint param2 = std::stoul(m_tokens[2]);
                 parameters.push_back(param1);
                 parameters.push_back(param2);
             }
@@ -37,13 +36,13 @@ state CommandsEngine::processCommand(std::string command)
         }
         
     } 
-    else if(tokens[0] == "draw")
+    else if(m_tokens[0] == "draw")
     {
-        std::transform(tokens[1].begin(), tokens[1].end(), tokens[1].begin(), ::tolower);
-        if(tokens[1] == "line")
+        std::transform(m_tokens[1].begin(), m_tokens[1].end(), m_tokens[1].begin(), ::tolower);
+        if(m_tokens[1] == "line")
         {
             newState = state::DRAW_LINE;
-            if(tokens.size() != 4) 
+            if(m_tokens.size() != 4) 
             {
                 newState = state::UNKNOWN;
                 errorMessage = "Usage: move <x-coordinate> <y-coordinate>";
@@ -52,8 +51,8 @@ state CommandsEngine::processCommand(std::string command)
             {
                 try
                 {
-                    uint param1 = std::stoul(tokens[2]);
-                    uint param2 = std::stoul(tokens[3]);
+                    uint param1 = std::stoul(m_tokens[2]);
+                    uint param2 = std::stoul(m_tokens[3]);
                     parameters.push_back(param1);
                     parameters.push_back(param2);
                 }
@@ -67,29 +66,30 @@ state CommandsEngine::processCommand(std::string command)
         else
         {
             newState = state::UNKNOWN;
-            errorMessage = "Usage: draw <shape> <param1> <param2> ...";
+            errorMessage = "Usage: draw <shape> <param1> <param2>";
         }
         
     }
-    else if(tokens[0] == "reset")
+    else if(m_tokens[0] == "reset")
     {
         newState = state::RESET;
     }
-    else if(tokens[0] == "quit")
+    else if(m_tokens[0] == "quit")
     {
         newState = state::QUIT;
     }
     else
     {
         newState = state::UNKNOWN;
-        errorMessage = "Unknow command: " + tokens[0];
+        errorMessage = "Unknow command: " + m_tokens[0];
     }
     return newState;
 }
 
-void CommandsEngine::Reset()
+void CommandsEngine::reset()
 {
     m_parser.clear();
+    m_tokens.clear();
     parameters.clear();
     errorMessage = "";
 }

@@ -4,18 +4,18 @@
 #include <Common.h>
 #include <SFML/Graphics.hpp>
 
-class Drawer
+class Drawer : public sf::Drawable
 {
     public:
         Drawer();
+        Drawer(float radius, float x, float y);
         ~Drawer();
 
-        const sf::CircleShape& getBody() const;
-        const sf::VertexArray& getShapes() const;
-        void Move(float x, float y);
-        void Reset();
-        sf::VertexArray& DrawLine(float x, float y);
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         
+        void move(float x, float y);
+        void drawLine(float x, float y);
+        void reset();        
     private:
         sf::CircleShape m_body;
         float m_radius; 

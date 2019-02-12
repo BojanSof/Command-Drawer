@@ -6,14 +6,19 @@ Application::Application() :    m_running(true),
                                 m_window(sf::VideoMode(1366, 768, 32), "Command Drawer", sf::Style::Default),
                                 m_engine(),
                                 m_drawer(),
-                                m_textbox(30),
+                                m_textbox(),
                                 m_input(""),
                                 appState(state::START)
 {
     m_window.setFramerateLimit(60);
-    m_drawer.Move(m_width/2.0f, m_height/2.0f);
+    m_drawer.move(m_width/2.0f, m_height/2.0f);
     m_textbox.setPosition(30, 30);
-    std::cout << "\nCommand Drawer" << std::endl; 
+    m_font.loadFromFile("fonts/arial.ttf");
+    m_status.setFont(m_font);
+    m_status.setPosition(0, m_height - 20);
+    m_status.setFillColor(sf::Color::White);
+    m_status.setCharacterSize(15);
+    m_status.setString("Ready");
 }
 
 Application::Application(uint width, uint height, const std::string& title) :    
@@ -23,14 +28,19 @@ Application::Application(uint width, uint height, const std::string& title) :
                                 m_window(sf::VideoMode(width, height, 32), title, sf::Style::Default),
                                 m_engine(),
                                 m_drawer(),
-                                m_textbox(30),
+                                m_textbox(25, 20),
                                 m_input(""),
                                 appState(state::START)
 {
     m_window.setFramerateLimit(60);
-    m_drawer.Move(m_width/2.0f, m_height/2.0f);
+    m_drawer.move(m_width/2.0f, m_height/2.0f);
     m_textbox.setPosition(30, 30);
-    std::cout << "\nCommand Drawer" << std::endl;
+    m_font.loadFromFile("fonts/arial.ttf");
+    m_status.setFont(m_font);
+    m_status.setPosition(0, m_height - 20);
+    m_status.setCharacterSize(15);
+    m_status.setFillColor(sf::Color::White);
+    m_status.setString("Ready");
 }
 
 Application::~Application() 
@@ -43,20 +53,17 @@ bool Application::isRunning() const
     return m_running;
 }
 
-const sf::RenderWindow& Application::getWindow() const
+void Application::reset()
 {
-    return m_window;
-}
-
-void Application::Reset()
-{
-    m_drawer.Reset();
-    m_drawer.Move(m_width/2.0f, m_height/2.0f);
-    m_engine.Reset();
+    m_drawer.reset();
+    m_drawer.move(m_width/2.0f, m_height/2.0f);
+    m_engine.reset();
+    m_textbox.clear();
     appState = state::IDLE;
+    m_status.setString("Ready");
 }
 
-void Application::HandleEvents()
+void Application::handleEvents()
 {   
     sf::Event event;
     while(m_window.pollEvent(event))
@@ -76,21 +83,6 @@ void Application::HandleEvents()
                 }
             }
             break;
-            /*case sf::Event::TextEntered:
-            {
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
-                {
-                    appState = m_engine.processCommand(m_input);
-                    m_input = "";
-                }
-                else if(event.text.unicode < 128)
-                {
-                    char c = static_cast<char>(event.text.unicode);
-                    m_input += c;
-                    std::cout << m_input << std::endl;
-                }
-            }
-            break;*/
             case sf::Event::KeyPressed:
             {
                 switch(event.key.code)
@@ -116,47 +108,51 @@ void Application::HandleEvents()
     }
 }
 
-void Application::Update()
+void Application::update()
 {
     switch(appState)
     {
         case state::START:
             m_window.clear();
-            m_window.draw(m_drawer.getBody());
+            m_window.draw(m_drawer);
+            m_status.setString("Ready");
         break;
         case state::MOVE:
             m_window.clear();
-            m_drawer.Move(m_engine.parameters[0], m_engine.parameters[1]);
-            m_window.draw(m_drawer.getBody());
-            m_window.draw(m_drawer.getShapes());
+            m_drawer.move(m_engine.parameters[0], m_engine.parameters[1]);
+            m_window.draw(m_drawer);
+            m_status.setString("Drawer moved successfully...");
         break;
         case state::DRAW_LINE:
             m_window.clear();
-            m_window.draw(m_drawer.DrawLine(m_engine.parameters[0], m_engine.parameters[1]));
-            m_window.draw(m_drawer.getBody());
+            m_drawer.drawLine(m_engine.parameters[0], m_engine.parameters[1]);
+            m_window.draw(m_drawer);
+            m_status.setString("Line drawn successfully...");
         break;
         case state::RESET:
             m_window.clear();
-            Reset();
-            m_window.draw(m_drawer.getBody());
+            reset();
+            m_window.draw(m_drawer);
+            m_status.setString("Ready");
         break;
         case state::QUIT:
             m_running = false;
+            m_status.setString("Exiting...");
         break;
         case state::UNKNOWN:
-            std::cout << m_engine.errorMessage << std::endl;
+            m_status.setString(m_engine.errorMessage);
         break;
         default:
             m_window.clear();
-            m_window.draw(m_drawer.getBody());
-            m_window.draw(m_drawer.getShapes());
+            m_window.draw(m_drawer);
         break;
     }
+    m_window.draw(m_status);
     m_window.draw(m_textbox);
     appState = state::IDLE;
 }
 
-void Application::Display()
+void Application::display()
 {
     m_window.display();
 }

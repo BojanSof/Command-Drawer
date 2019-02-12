@@ -11,10 +11,11 @@
 class CommandsEngine
 {
     public:
-        state processCommand(std::string command);
-        void Reset();
+        state processCommand(const std::string& command);
+        void reset();
     private:
         std::istringstream m_parser;
+        std::vector<std::string> m_tokens;
     public:
         std::vector<uint> parameters;
         std::string errorMessage;

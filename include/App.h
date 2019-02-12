@@ -17,23 +17,22 @@ class Application
         ~Application();
         
         bool isRunning() const;
-        const sf::RenderWindow& getWindow() const;
-        Drawer& getDrawer();
-        void Reset();
-        
-        void HandleEvents();
-        void Update();
-        void Display();
+        void reset();
+        void handleEvents();
+        void update();
+        void display();
 
     private:
-        CommandsEngine m_engine;
-        Drawer m_drawer;
         sf::RenderWindow m_window;
         std::string m_title;
-        TextBox m_textbox;
         bool m_running;
         uint m_width;
         uint m_height;
+        CommandsEngine m_engine;
+        Drawer m_drawer;
+        TextBox m_textbox;
+        sf::Text m_status;
+        sf::Font m_font;
         std::string m_input;
     public:
         state appState;
