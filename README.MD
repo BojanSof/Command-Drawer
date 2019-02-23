@@ -1,5 +1,5 @@
 # Command Drawer
-Command drawer is simple program which draws shapes using command line instructions.
+Command drawer is simple program which draws shapes using text instructions.
 ![Command Drawer](https://github.com/BojanSof/Command-Drawer/blob/master/images/CommandDrawer.png)
 # Getting Started
 The program was built on Ubuntu 18.04 with GNU C++ compiler version 7.3.0
